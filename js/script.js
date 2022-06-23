@@ -12,6 +12,10 @@ const inputActivityMinimal = document.querySelector('#activity-minimal');
 console.log(inputActivityMinimal);
 let coefficient = 1.2;
 
+const formatNumber = (num) => {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1 `);
+};
+
 const disableSubmitButton = () => {
     if (inputAgeElement.value && inputHeightElement.value && inputWeightElement.value) {
         submitButtonElement.disabled = false;
@@ -33,12 +37,12 @@ const calculateCalories = (input) => {
     let n = 0;
     if (input.checked) {
         n = (10 * inputWeightElement.value) + (6.25 * inputHeightElement.value) - (5 * inputAgeElement.value) + 5;
-        calories = coefficient * Math.ceil(n);
+        calories = coefficient * n;
     } else {
         n = (10 * inputWeightElement.value) + (6.25 * inputHeightElement.value) - (5 * inputAgeElement.value) - 161;
-        calories = coefficient * Math.ceil(n);
+        calories = coefficient * n;
     }
-    return Math.ceil(calories);
+    return Math.round(calories);
 };
 
 resetButtonElement.addEventListener('click', () => {
@@ -94,7 +98,7 @@ submitButtonElement.addEventListener('click', (evt) => {
     evt.preventDefault();
     resultElement.classList.remove('counter__result--hidden');
     const resultCalories = calculateCalories(maleRadioButtonElement);
-    counterResultListElement.querySelector('#calories-norm').textContent = resultCalories;
-    counterResultListElement.querySelector('#calories-minimal').textContent = Math.ceil(resultCalories * 0.85);
-    counterResultListElement.querySelector('#calories-maximal').textContent = Math.ceil(resultCalories * 1.15);
+    counterResultListElement.querySelector('#calories-norm').textContent = formatNumber(resultCalories);
+    counterResultListElement.querySelector('#calories-minimal').textContent = formatNumber(Math.round(resultCalories * 0.85));
+    counterResultListElement.querySelector('#calories-maximal').textContent = formatNumber(Math.round(resultCalories * 1.15));
 });
