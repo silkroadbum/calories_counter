@@ -8,6 +8,8 @@ const resetButtonElement = document.querySelector('.form__reset-button');
 const maleRadioButtonElement = document.querySelector('#gender-male');
 const counterResultListElement = document.querySelector('.counter__result-list');
 const radioButtonsPhysicalActivity = document.querySelector('.radios-group');
+const inputActivityMinimal = document.querySelector('#activity-minimal');
+console.log(inputActivityMinimal);
 let coefficient = 1.2;
 
 const disableSubmitButton = () => {
@@ -31,22 +33,33 @@ const calculateCalories = (input) => {
     let n = 0;
     if (input.checked) {
         n = (10 * inputWeightElement.value) + (6.25 * inputHeightElement.value) - (5 * inputAgeElement.value) + 5;
-        calories = coefficient * n;
+        calories = coefficient * Math.ceil(n);
     } else {
         n = (10 * inputWeightElement.value) + (6.25 * inputHeightElement.value) - (5 * inputAgeElement.value) - 161;
-        calories = coefficient * n;
+        calories = coefficient * Math.ceil(n);
     }
-    return Math.floor(calories);
+    return Math.ceil(calories);
 };
 
 resetButtonElement.addEventListener('click', () => {
     resultElement.classList.add('counter__result--hidden');
     coefficient = 1.2;
+    submitButtonElement.disabled = true;
+    resetButtonElement.disabled = true;
+    inputAgeElement.value = '';
+    inputHeightElement.value = '';
+    inputWeightElement.value = '';
+    maleRadioButtonElement.checked = true;
+    radioButtonsPhysicalActivity.querySelectorAll('input').forEach((element) => {
+        element.checked = false;
+    });
+    inputActivityMinimal.checked = true;
 });
 
 radioButtonsPhysicalActivity.addEventListener('change', (evt) => {
     evt.preventDefault();
     if (evt.target.name = 'actibity') {
+        evt.target.checked = true;
         switch (evt.target.value) {
             case 'min':
                 coefficient = 1.2;
@@ -82,6 +95,6 @@ submitButtonElement.addEventListener('click', (evt) => {
     resultElement.classList.remove('counter__result--hidden');
     const resultCalories = calculateCalories(maleRadioButtonElement);
     counterResultListElement.querySelector('#calories-norm').textContent = resultCalories;
-    counterResultListElement.querySelector('#calories-minimal').textContent = Math.floor(resultCalories * 0.85);
-    counterResultListElement.querySelector('#calories-maximal').textContent = Math.floor(resultCalories * 1.15);
+    counterResultListElement.querySelector('#calories-minimal').textContent = Math.ceil(resultCalories * 0.85);
+    counterResultListElement.querySelector('#calories-maximal').textContent = Math.ceil(resultCalories * 1.15);
 });
